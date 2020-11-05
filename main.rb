@@ -44,4 +44,11 @@ module Enumerable
         end
         true
       end
+      def my_any?
+        my_each do |element|
+        return true unless yield(element) == false
+        end
+        # p 'testing with any '
+        false
+        end 
 end

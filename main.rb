@@ -99,6 +99,18 @@ def my_count(number = nil)
       arr.length
     end
   end
+  def my_map(proc = nil)
+    return to_enum(:my_map) unless block_given? || proc.nil?
+    
+    arr = self
+    new_arr = []
+    if proc.nil?
+    arr.my_each { |elt| new_arr << yield(elt) }
+    else
+    arr.to_a.my_each { |elt| new_arr << proc.call(elt) }
+    end
+    new_arr
+    end 
 end
 [1, 2, 3, 4].my_each do |element|
   puts element

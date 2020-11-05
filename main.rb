@@ -74,6 +74,19 @@ module Enumerable
     end
     false
 end
+
+def my_none?
+    return to_enum(:my_none) unless block_given?
+    
+    arr = self
+    index = 0
+    my_each do |elt|
+    if (yield(elt) == false) && (index < arr.length)
+    index += 1
+    elsif yield(elt) == true
+    return false
+    end
+    return true
 end
 [1, 2, 3, 4].my_each do |element|
   puts element

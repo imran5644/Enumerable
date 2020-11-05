@@ -22,4 +22,17 @@ module Enumerable
       break if counter == arr.length
     end
   end
+  
+  def my_select
+    return to_enum(:my_select) unless block_given?
+    
+    array = self
+    counter = 0
+    selected_elements = []
+    until counter == array.length
+    selected_elements << array[counter] if yield(array[counter])
+    counter += 1
+    end
+    p selected_elements
+    end
 end

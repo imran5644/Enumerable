@@ -112,6 +112,27 @@ def my_count(number = nil)
     new_arr
     end 
 end
+def my_inject(num = nil, sym = nil)
+  if block_given?
+    memo = num
+    my_each do |elt|
+      memo = memo.nil? ? elt : yield(memo, elt)
+    end
+   memo
+  elsif !num.nil? && (num.is_a?(Symbol) || num.is_a?(String))
+   memo = nil
+    my_each do |elt|
+     memo =memo.nil? ? elt :memo.send(num, elt)
+    end
+   memo
+  elsif !sym.nil? && (sym.is_a?(Symbol) || sym.is_a?(String))
+   memo = num
+    my_each do |elt|
+     memo =memo.nil? ? elt :memo.send(sym, elt)
+    end
+   memo
+  end
+end
 [1, 2, 3, 4].my_each do |element|
   puts element
 end

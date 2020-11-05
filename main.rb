@@ -88,6 +88,18 @@ def my_none?
     end
     return true
 end
+def my_count(number = nil)
+    arr = self
+    new_arr = []
+    if block_given? && number==nil
+      new_arr<<arr.to_a.my_select { |elt| elt == yield(elt) }
+    elsif number
+      arr.my_select { |elt| elt == number }.length
+    else
+      arr.length
+    end
+  end
+end
 [1, 2, 3, 4].my_each do |element|
   puts element
 end

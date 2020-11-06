@@ -2,7 +2,8 @@ AllCops:
   Exclude:
     - "Guardfile"
     - "Rakefile"
-    
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
 Metrics/CyclomaticComplexity:
   Enabled: false
   DisplayCopNames: true

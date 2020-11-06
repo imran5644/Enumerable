@@ -2,6 +2,8 @@ AllCops:
   Exclude:
     - "Guardfile"
     - "Rakefile"
+Metrics/ModuleLength:
+ Enabled: false
 Lint/AmbiguousBlockAssociation:
   Enabled: false
 Metrics/CyclomaticComplexity:

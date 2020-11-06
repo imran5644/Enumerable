@@ -110,20 +110,21 @@ module Enumerable
     end
     new_arr
   end
-end
-def my_inject(arg = nil, sym = nil)
-  if (arg.is_a?(Symbol) || arg.is_a?(String)) && (!arg.nil? && sym.nil?)
-    sym = arg
-    arg = nil
+  def my_inject(arg = nil, sym = nil)
+    if (arg.is_a?(Symbol) || arg.is_a?(String)) && (!arg.nil? && sym.nil?)
+      sym = arg
+      arg = nil
+    end
+  
+    if !block_given? && !sym.nil?
+      my_each { |elt| arg = arg.nil? ? elt : arg.send(sym, elt) }
+    else
+      my_each { |elt| arg = arg.nil? ? elt : yield(arg, elt) }
+    end
+    arg
   end
+end
 
-  if !block_given? && !sym.nil?
-    my_each { |elt| arg = arg.nil? ? elt : arg.send(sym, elt) }
-  else
-    my_each { |elt| arg = arg.nil? ? elt : yield(arg, elt) }
-  end
-  arg
-end
 
 def multiply_els(elts)
   elts.my_inject { |result, elt| result * elt }

@@ -4,7 +4,7 @@ module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
 
-    arr = self
+    arr = to_a
     counter = 0
     loop do
       yield arr.to_a[counter]

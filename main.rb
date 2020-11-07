@@ -42,21 +42,18 @@ module Enumerable
 
   def my_all?(arg = nil)
     if block_given?
-      my_each do |elt|
-        return false unless yield(elt) == true
-      end
-      true
+      my_each { |item| return false if yield(item) == false }
+      return true
     elsif arg.nil?
-      my_each { |elt| return false if elt.nil? || elt == false }
+      my_each { |n| return false if n.nil? || n == false }
     elsif !arg.nil? && (arg.is_a? Class)
-      my_each do |elt|
-        return true unless elt.instance_of?(arg.class)
-      end
-      false
+      my_each { |n| return false if n.class != arg }
     elsif !arg.nil? && arg.instance_of?(Regexp)
-      my_each { |elt| return false unless elt.match(arg) }
-      true
+      my_each { |n| return false unless arg.match(n) }
+    else
+      my_each { |n| return false if n != arg }
     end
+    true
   end
 
   def my_any?(arg = nil)
@@ -92,9 +89,9 @@ module Enumerable
   end
 
   def my_map(proc = nil)
-    return to_enum(:my_map) unless block_given? || proc.nil?
+    return to_enum(:my_map) unless block_given?
 
-    arr = self
+    arr = to_a
     new_arr = []
     if proc.nil?
       arr.my_each { |elt| new_arr << yield(elt) }

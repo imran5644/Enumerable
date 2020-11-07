@@ -119,3 +119,4 @@ end
 def multiply_els(elts)
   elts.my_inject { |result, elt| result * elt }
 end
+p [1, 2, 3].all?(Numeric)

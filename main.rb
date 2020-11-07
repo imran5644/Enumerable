@@ -11,6 +11,7 @@ module Enumerable
       counter += 1
       break if counter == arr.to_a.length
     end
+    self
   end
 
   def my_each_with_index
@@ -23,12 +24,13 @@ module Enumerable
       counter += 1
       break if counter == arr.to_a.length
     end
+    self
   end
 
   def my_select
     return to_enum(:my_select) unless block_given?
 
-    arr = self
+    arr = to_a
     counter = 0
     selected_elts = []
     until counter == arr.length
@@ -40,18 +42,20 @@ module Enumerable
 
   def my_all?(arg = nil)
     if block_given?
-      my_each { |elt| return false if yield(elt) }
-      return true
-    end
-    arg.nil? ? arg.class.to_s : my_all? { |elt| elt }
-
-    case arg.class.to_s
-    when 'Class'
-      my_all? { |elt| elt.is_a? arg }
-    when 'Regexp'
-      my_all? { |elt| elt =~ arg }
-    else
-      my_all? { |elt| elt == arg }
+      my_each do |elt|
+        return false unless yield(elt) == true
+      end
+      true
+    elsif arg.nil?
+      my_each { |elt| return false if elt.nil? || elt == false }
+    elsif !arg.nil? && (arg.is_a? Class)
+      my_each do |elt|
+        return true unless elt.instance_of?(arg.class)
+      end
+      false
+    elsif !arg.nil? && arg.instance_of?(Regexp)
+      my_each { |elt| return false unless elt.match(arg) }
+      true
     end
   end
 
@@ -74,19 +78,8 @@ module Enumerable
     false
   end
 
-  def my_none?(arg = nil)
-    return to_enum(:my_none) unless block_given?
-
-    if block_given?
-      my_each { |elt| return false if yield(elt) }
-      true
-    elsif !arg.nil? && (arg.instance_of? Regexp)
-      my_each { |elt| return false if elt.match(arg) }
-      true
-    elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |elt| return false unless elt.instance_of?(arg) }
-      true
-    end
+  def my_none?(arg = nil, &block)
+    !my_any?(arg, &block)
   end
 
   def my_count(number = nil, &block)
@@ -129,6 +122,8 @@ end
 def multiply_els(elts)
   elts.my_inject { |result, elt| result * elt }
 end
+p [1, 2, 3, 4].my_each { |v| v * 2 }
+
 # 1. my_each
 puts 'my_each'
 puts '-------'

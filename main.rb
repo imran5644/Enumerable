@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 module Enumerable
+
   def my_each
     return to_enum(:my_each) unless block_given?
-
     arr = to_a
     counter = 0
-    loop do
+    while counter<arr.length
       yield arr.to_a[counter]
       counter += 1
-      break if counter == arr.to_a.length
     end
     self
   end
@@ -55,25 +54,16 @@ module Enumerable
     end
     true
   end
-
-  def my_any?(arg = nil)
+  def my_any?(type = nil)
     if block_given?
-      my_each { |elt| return true if yield(elt) }
-      return false
-    end
-    arg.nil? ? arg.class.to_s : my_any? { |elt| elt }
-
-    if arg.class.to_s == 'Class'
-      my_each { |elt| return true if elt.is_a? arg }
-    elsif arg.class.to_s == 'Regexp'
-      my_each { |elt| return true if elt =~ arg }
-    elsif arg.nil?
-      my_each { |elt| return true if elt }
+      my_each { |item| return true if yield(item) == true }
+    elsif type.nil?
+      my_each { |item| return true if item.nil? } 
     else
-      my_each { |elt| return true if elt == arg }
-    end
-    false
-  end
+      my_each { |item| return true if item.class.is_a?(type.class) || item.class.superclass == type.class } 
+    end 
+    false 
+  end 
 
   def my_none?(arg = nil, &block)
     !my_any?(arg, &block)
@@ -119,4 +109,9 @@ end
 def multiply_els(elts)
   elts.my_inject { |result, elt| result * elt }
 end
-p [1, 2, 3].all?(Numeric)
+p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
+p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
+p %w[ant bear cat].my_any?(/d/)                        #=> false
+p [nil, true, 99].my_any?(Integer)                     #=> true
+p [nil, true, 99].my_any?                              #=> true
+p [].my_any?                                           #=> false
